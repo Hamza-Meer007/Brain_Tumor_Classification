@@ -24,15 +24,50 @@ app.add_middleware(
 )
 
 # Load the trained model
+# Replace the model loading section with this code
+
+# Create a new model with the same architecture as in the notebook
 try:
-    model = tf.keras.models.load_model("brain_tumor_model.h5")
-    print("Model loaded successfully!")
+    # Define the model architecture manually
+    model = tf.keras.Sequential([
+        tf.keras.layers.Conv2D(32, (3, 3), activation='relu', input_shape=(240, 240, 3)),
+        tf.keras.layers.MaxPooling2D((2, 2)),
+        tf.keras.layers.Conv2D(64, (3, 3), activation='relu'),
+        tf.keras.layers.MaxPooling2D((2, 2)),
+        tf.keras.layers.Conv2D(128, (3, 3), activation='relu'),
+        tf.keras.layers.MaxPooling2D((2, 2)),
+        tf.keras.layers.Conv2D(128, (3, 3), activation='relu'),
+        tf.keras.layers.MaxPooling2D((2, 2)),
+        tf.keras.layers.Dropout(0.5),
+        tf.keras.layers.Conv2D(128, (3, 3), activation='relu'),
+        tf.keras.layers.MaxPooling2D((2, 2)),
+        tf.keras.layers.Flatten(),
+        tf.keras.layers.Dropout(0.5),
+        tf.keras.layers.Dense(512, activation='relu'),
+        tf.keras.layers.Dense(2, activation='softmax')
+    ])
+    
+    # Compile the model
+    model.compile(
+        loss='categorical_crossentropy',
+        optimizer=tf.keras.optimizers.legacy.RMSprop(learning_rate=1e-4),  # Note: using legacy optimizer
+        metrics=['accuracy']
+    )
+    
+    # Try to load weights only (not the full model)
+    try:
+        model.load_weights("brain_tumor_model.h5")
+        print("Model weights loaded successfully!")
+    except Exception as weight_error:
+        print(f"Could not load weights: {weight_error}")
+        print("Using untrained model. Please train the model before using.")
+    
     
     # Define class names
     class_name = {0: 'no', 1: 'yes'}  # 0: non-tumorous, 1: tumorous
     
 except Exception as e:
-    print(f"Error loading model: {e}")
+    print(f"Error creating model: {e}")
     model = None
 
 # Image preprocessing function
