@@ -1,0 +1,24 @@
+/* Custom styles for premium look */
+body {
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+}
+
+input[type="file"]::-webkit-file-upload-button {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 0.5em 1em;
+  border-radius: 0.5em;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+input[type="file"]::-ms-browse {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 0.5em 1em;
+  border-radius: 0.5em;
+  font-weight: bold;
+  cursor: pointer;
+}

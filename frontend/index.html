@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brain Tumor Classification</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gradient-to-br from-gray-900 to-blue-900 min-h-screen flex flex-col items-center justify-center">
+  <div class="bg-white bg-opacity-10 backdrop-blur-lg rounded-xl shadow-2xl p-8 w-full max-w-lg mx-auto">
+    <div class="flex flex-col items-center mb-6">
+      <img src="https://img.icons8.com/ios-filled/100/brain.png" alt="Brain Icon" class="mb-2">
+      <h1 class="text-3xl font-extrabold text-white mb-2 tracking-wide">Brain Tumor Classification</h1>
+      <p class="text-blue-200 text-center">Upload an MRI image to detect the presence of a brain tumor using our AI-powered model.</p>
+    </div>
+    <form id="uploadForm" class="flex flex-col items-center gap-4">
+  <input type="file" id="imageInput" accept="image/*" class="block w-full text-sm text-gray-200 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700" required />
+  <div id="previewContainer" class="w-full flex justify-center"></div>
+      <button type="submit" class="w-full py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-lg transition duration-200">Classify Image</button>
+    </form>
+    <div id="result" class="mt-6 text-center hidden">
+      <h2 class="text-xl font-bold text-white mb-2">Result</h2>
+      <p id="resultText" class="text-lg text-blue-200"></p>
+    </div>
+  </div>
+  <footer class="mt-8 text-blue-200 text-sm text-center opacity-80">
+    &copy; 2025 Brain Tumor Classification. All rights reserved.
+  </footer>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,4 +1,3 @@
-
 # Brain Tumor Classification System
 
 This project implements a Convolutional Neural Network (CNN) for classifying brain MRI images as tumorous or non-tumorous. The system includes a complete pipeline from data preprocessing to model training and a FastAPI backend for making predictions.
@@ -9,6 +8,7 @@ This project implements a Convolutional Neural Network (CNN) for classifying bra
 - CNN model with 5 convolutional layers for binary classification
 - FastAPI backend for real-time predictions
 - Simple API endpoint for uploading and analyzing brain MRI images
+- Modern web-based user interface for easy interaction
 
 ## Requirements
 
@@ -24,6 +24,7 @@ pip install -r requirements.txt
 - main.py : FastAPI backend for image prediction
 - requirements.txt : List of required Python packages
 - brain_tumor_model.h5 : Trained model file
+- frontend/ : Modern web-based user interface (HTML, Tailwind CSS, JS)
 
 ## How to Use
 
@@ -37,37 +38,31 @@ pip install -r requirements.txt
 1. Start the FastAPI server:
 
 ```
-uvicorn main:app --reload
+uvicorn main:app --reload
 ```
 
-
-
-
-
-
-
-
-
-
-
-
 * Access the API documentation at **http://localhost:8000/docs**
-
-
-
-
-
-
-
-
-
-
 * Use the /predict endpoint to upload an MRI image and get prediction results
+
+### Using the Frontend
+
+1. Open `frontend/index.html` in your web browser.
+2. Upload an MRI image using the sleek, modern UI.
+3. The frontend will preview your image and send it to the backend for classification.
+4. Results (tumorous/non-tumorous and confidence score) are displayed instantly with a premium look.
+
+**Note:** Ensure the FastAPI backend is running and accessible at `http://localhost:8000` for the frontend to work.
+
+#### Frontend Features
+- Beautiful, responsive design using Tailwind CSS
+- Image upload with instant preview
+- Real-time classification results with confidence score
+- Error handling and user feedback
 
 ## API Endpoints
 
 - POST /predict : Upload an image file and receive prediction results
-  - Returns: JSON with prediction (tumorous/non-tumorous) and confidence score
+  - Returns: JSON with `prediction` (tumorous/non-tumorous) and `confidence` score
 
 ## Contributing
 
