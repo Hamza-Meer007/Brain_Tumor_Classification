@@ -8,10 +8,10 @@ preview.className = 'mt-4 rounded-lg shadow-lg max-h-64 mx-auto';
 preview.style.display = 'none';
 imageInput.parentNode.insertBefore(preview, imageInput.nextSibling);
 
-imageInput.addEventListener('change', function() {
+imageInput.addEventListener('change', function () {
   if (imageInput.files && imageInput.files[0]) {
     const reader = new FileReader();
-    reader.onload = function(e) {
+    reader.onload = function (e) {
       preview.src = e.target.result;
       preview.style.display = 'block';
     };
@@ -21,7 +21,7 @@ imageInput.addEventListener('change', function() {
   }
 });
 
-document.getElementById('uploadForm').addEventListener('submit', async function(e) {
+document.getElementById('uploadForm').addEventListener('submit', async function (e) {
   e.preventDefault();
   if (!imageInput.files.length) {
     resultText.textContent = 'Please select an image.';
@@ -33,7 +33,8 @@ document.getElementById('uploadForm').addEventListener('submit', async function(
   resultText.textContent = 'Classifying...';
   resultDiv.classList.remove('hidden');
   try {
-    const response = await fetch('http://localhost:8000/predict', {
+    const backend_url = "https://hamzameer-brain-tumor-api.hf.space" || "http://localhost:8000"
+    const response = await fetch(`${backend_url}/predict`, {
       method: 'POST',
       body: formData
     });
