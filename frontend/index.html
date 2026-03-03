@@ -1,32 +1,257 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Brain Tumor Classification</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NeuroScan AI &mdash; Brain Tumor Detection</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
 </head>
-<body class="bg-gradient-to-br from-gray-900 to-blue-900 min-h-screen flex flex-col items-center justify-center">
-  <div class="bg-white bg-opacity-10 backdrop-blur-lg rounded-xl shadow-2xl p-8 w-full max-w-lg mx-auto">
-    <div class="flex flex-col items-center mb-6">
-      <img src="https://img.icons8.com/ios-filled/100/brain.png" alt="Brain Icon" class="mb-2">
-      <h1 class="text-3xl font-extrabold text-white mb-2 tracking-wide">Brain Tumor Classification</h1>
-      <p class="text-blue-200 text-center">Upload an MRI image to detect the presence of a brain tumor using our AI-powered model.</p>
+
+<body>
+
+  <!-- BG: deep space canvas -->
+  <canvas id="bgCanvas"></canvas>
+
+  <!-- Floating brain decoration -->
+  <div class="brain-deco" aria-hidden="true">
+    <svg viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="200" cy="185" rx="130" ry="110" stroke="rgba(0,212,255,0.07)" stroke-width="1" />
+      <ellipse cx="200" cy="185" rx="100" ry="84" stroke="rgba(0,212,255,0.06)" stroke-width="1" />
+      <ellipse cx="200" cy="185" rx="70" ry="58" stroke="rgba(123,97,255,0.06)" stroke-width="1" />
+      <path d="M90 185 Q120 120 200 110 Q280 120 310 185 Q280 260 200 265 Q120 260 90 185Z"
+        stroke="rgba(0,212,255,0.12)" stroke-width="1" fill="none" />
+      <path d="M130 155 Q160 130 200 128 Q240 130 270 155" stroke="rgba(0,212,255,0.09)" stroke-width="1" fill="none" />
+      <path d="M200 110 L200 265" stroke="rgba(123,97,255,0.08)" stroke-width="1" stroke-dasharray="4 6" />
+      <path d="M115 170 Q140 145 200 140 Q260 145 285 170" stroke="rgba(0,212,255,0.07)" stroke-width="1" fill="none" />
+      <circle cx="200" cy="185" r="6" fill="rgba(0,212,255,0.18)" />
+      <circle cx="155" cy="165" r="3" fill="rgba(123,97,255,0.25)" />
+      <circle cx="245" cy="165" r="3" fill="rgba(123,97,255,0.25)" />
+      <circle cx="175" cy="215" r="2.5" fill="rgba(0,212,255,0.2)" />
+      <circle cx="225" cy="215" r="2.5" fill="rgba(0,212,255,0.2)" />
+    </svg>
+  </div>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-brand">
+      <div class="nav-logo">
+        <span class="logo-pulse"></span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M12 2C8.5 2 5 5 5 9c0 3.5 2 5.5 3 7l.5 1.5h7l.5-1.5c1-1.5 3-3.5 3-7 0-4-3.5-7-7-7z" />
+          <path d="M9 9h6M12 6.5v5" />
+        </svg>
+      </div>
+      <div>
+        <div class="nav-title">NeuroScan <span class="grad">AI</span></div>
+        <div class="nav-sub">Brain Tumor Detection System</div>
+      </div>
     </div>
-    <form id="uploadForm" class="flex flex-col items-center gap-4">
-  <input type="file" id="imageInput" accept="image/*" class="block w-full text-sm text-gray-200 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700" required />
-  <div id="previewContainer" class="w-full flex justify-center"></div>
-      <button type="submit" class="w-full py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-lg transition duration-200">Classify Image</button>
-    </form>
-    <div id="result" class="mt-6 text-center hidden">
-      <h2 class="text-xl font-bold text-white mb-2">Result</h2>
-      <p id="resultText" class="text-lg text-blue-200"></p>
+    <div class="nav-pills">
+      <span class="pill pill-live"><span class="live-dot"></span>Live</span>
+      <span class="pill">v2.0</span>
+      <span class="pill">CNN Model</span>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-eyebrow">AI-POWERED &nbsp;&bull;&nbsp; MEDICAL IMAGING &nbsp;&bull;&nbsp; REAL-TIME ANALYSIS</div>
+    <h1 class="hero-title">
+      Detect Brain Tumors<br>
+      <span class="hero-grad">with Precision AI</span>
+    </h1>
+    <p class="hero-desc">Upload an MRI scan &mdash; our deep learning model classifies tumor presence in seconds with
+      high confidence.</p>
+
+    <!-- Stats strip -->
+    <div class="stats-strip">
+      <div class="stat">
+        <div class="stat-val">CNN</div>
+        <div class="stat-key">Architecture</div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <div class="stat-val">240px</div>
+        <div class="stat-key">Input Size</div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <div class="stat-val">&lt;2s</div>
+        <div class="stat-key">Inference Time</div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <div class="stat-val">2-Class</div>
+        <div class="stat-key">Output</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Scanner card wrapper (3-D tilt) -->
+  <div class="card-scene">
+    <div class="scanner-card" id="scannerCard">
+
+      <!-- Corner brackets -->
+      <span class="corner tl"></span>
+      <span class="corner tr"></span>
+      <span class="corner bl"></span>
+      <span class="corner br"></span>
+
+      <!-- Card header -->
+      <div class="card-header">
+        <div class="card-header-left">
+          <span class="header-dot"></span>
+          <span class="header-dot" style="background:#7b61ff"></span>
+          <span class="header-dot" style="background:#00e5a0"></span>
+        </div>
+        <span class="card-header-label">MRI SCAN UPLOADER</span>
+        <div class="scan-status" id="scanStatus">READY</div>
+      </div>
+
+      <form id="uploadForm">
+
+        <!-- Drop zone -->
+        <div class="dropzone" id="dropzone">
+          <input type="file" id="imageInput" accept="image/*" hidden />
+
+          <!-- Idle state -->
+          <div class="dz-idle" id="dzIdle">
+            <div class="dz-ring">
+              <div class="dz-ring-inner">
+                <svg viewBox="0 0 48 48" fill="none">
+                  <path d="M24 14v14M17 21l7-7 7 7" stroke="#00d4ff" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                  <rect x="8" y="34" width="32" height="4" rx="2" fill="rgba(0,212,255,0.1)"
+                    stroke="rgba(0,212,255,0.3)" stroke-width="1" />
+                </svg>
+              </div>
+            </div>
+            <p class="dz-main">Drop your MRI scan here</p>
+            <p class="dz-hint">or <button type="button" id="browseBtn" class="link-btn">browse file</button></p>
+            <p class="dz-meta">JPG &bull; PNG &bull; WEBP &bull; max 10 MB</p>
+          </div>
+
+          <!-- Preview state -->
+          <div class="dz-preview" id="dzPreview" style="display:none;">
+            <div class="preview-wrap">
+              <img id="previewImg" src="" alt="MRI Preview" />
+              <!-- Scan overlay line -->
+              <div class="scan-line" id="scanLine" style="display:none;"></div>
+              <!-- Grid overlay -->
+              <div class="scan-grid"></div>
+              <!-- Corner reticles -->
+              <span class="reticle rt"></span>
+              <span class="reticle rb"></span>
+              <span class="reticle lt"></span>
+              <span class="reticle lb"></span>
+            </div>
+            <button type="button" id="removeImg" class="remove-btn">
+              <svg viewBox="0 0 16 16" fill="currentColor">
+                <path
+                  d="M4.646 4.646a.5.5 0 01.708 0L8 7.293l2.646-2.647a.5.5 0 01.708.708L8.707 8l2.647 2.646a.5.5 0 01-.708.708L8 8.707l-2.646 2.647a.5.5 0 01-.708-.708L7.293 8 4.646 5.354a.5.5 0 010-.708z" />
+              </svg>
+              Remove
+            </button>
+          </div>
+        </div>
+
+        <!-- Analyze button -->
+        <button type="submit" id="analyzeBtn" class="analyze-btn" disabled>
+          <span class="btn-fill"></span>
+          <span class="btn-content btn-text">
+            <svg viewBox="0 0 20 20" fill="currentColor" width="18" height="18">
+              <path fill-rule="evenodd"
+                d="M3 4a1 1 0 011-1h4a1 1 0 010 2H6.414l2.293 2.293a1 1 0 01-1.414 1.414L5 6.414V8a1 1 0 01-2 0V4zm9 1a1 1 0 110-2h4a1 1 0 011 1v4a1 1 0 11-2 0V6.414l-2.293 2.293a1 1 0 11-1.414-1.414L13.586 5H12zm-9 7a1 1 0 112 0v1.586l2.293-2.293a1 1 0 011.414 1.414L6.414 15H8a1 1 0 110 2H4a1 1 0 01-1-1v-4zm13-1a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 110-2h1.586l-2.293-2.293a1 1 0 011.414-1.414L17 13.586V12a1 1 0 011-1z"
+                clip-rule="evenodd" />
+            </svg>
+            Run Analysis
+          </span>
+          <span class="btn-content btn-loader" style="display:none;">
+            <svg class="spin" viewBox="0 0 24 24" fill="none" width="18" height="18">
+              <circle cx="12" cy="12" r="10" stroke="rgba(255,255,255,0.2)" stroke-width="2" />
+              <path d="M12 2a10 10 0 0110 10" stroke="#00d4ff" stroke-width="2" stroke-linecap="round" />
+            </svg>
+            Scanning&hellip;
+          </span>
+        </button>
+
+      </form>
+
+      <!-- Result -->
+      <div class="result-panel" id="resultCard" style="display:none;">
+        <div class="result-tag" id="resultTag">ANALYSIS COMPLETE</div>
+        <div class="result-main">
+          <div class="result-icon-wrap" id="resultIconWrap">
+            <!-- injected by JS -->
+          </div>
+          <div>
+            <div class="result-title" id="resultLabel"></div>
+            <div class="result-subtitle" id="resultSub"></div>
+          </div>
+        </div>
+        <div class="conf-block">
+          <div class="conf-label-row">
+            <span class="conf-label">Model Confidence</span>
+            <span class="conf-pct" id="confPct">0%</span>
+          </div>
+          <div class="conf-track">
+            <div class="conf-fill" id="confBar" style="width:0%"></div>
+            <div class="conf-shimmer"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Error -->
+      <div class="err-panel" id="errorCard" style="display:none;">
+        <svg viewBox="0 0 20 20" fill="currentColor" width="18" height="18">
+          <path fill-rule="evenodd"
+            d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+            clip-rule="evenodd" />
+        </svg>
+        <span id="errorMsg">An error occurred.</span>
+      </div>
+
+    </div><!-- /.scanner-card -->
+  </div><!-- /.card-scene -->
+
+  <!-- Bottom info strip -->
+  <div class="info-strip">
+    <div class="info-chip">
+      <svg viewBox="0 0 20 20" fill="currentColor" width="14">
+        <path fill-rule="evenodd"
+          d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+          clip-rule="evenodd" />
+      </svg>
+      Deep CNN Model
+    </div>
+    <div class="info-chip">
+      <svg viewBox="0 0 20 20" fill="currentColor" width="14">
+        <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+        <path fill-rule="evenodd"
+          d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
+          clip-rule="evenodd" />
+      </svg>
+      Binary Classification
+    </div>
+    <div class="info-chip warn">
+      <svg viewBox="0 0 20 20" fill="currentColor" width="14">
+        <path fill-rule="evenodd"
+          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+          clip-rule="evenodd" />
+      </svg>
+      Research &amp; Educational Use Only
     </div>
   </div>
-  <footer class="mt-8 text-blue-200 text-sm text-center opacity-80">
-    &copy; 2025 Brain Tumor Classification. All rights reserved.
-  </footer>
+
+  <footer class="footer">&copy; 2025 NeuroScan AI &mdash; Not a substitute for clinical diagnosis</footer>
+
   <script src="app.js"></script>
 </body>
+
 </html>
